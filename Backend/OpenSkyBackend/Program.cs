@@ -19,7 +19,7 @@ namespace OpenSkyBackend
                 {
                     webBuilder
                         .UseKestrel()
-                        .UseUrls("http://*:5000", "http://*:9001")
+                        .UseUrls("http://*:9001")
                         .UseStartup<Startup>()
                         .UseIISIntegration();
                 });
