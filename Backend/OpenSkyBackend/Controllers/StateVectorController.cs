@@ -36,12 +36,8 @@ namespace OpenSkyBackend.Controllers
 
         [HttpGet]
         [Route("/states/all")]
-        public async Task<IActionResult> Get([FromQuery] StateVectorsRequestDto request, CancellationToken cancellationToken)
+        public async Task Get([FromQuery] StateVectorsRequestDto request, CancellationToken cancellationToken)
         {
-            if (request == null)
-            {
-                return BadRequest("Invalid Request");
-            }
 
             // Prepare some data for the OpenSkyClient request:
             Credentials credentials = GetCredentials();
@@ -69,9 +65,8 @@ namespace OpenSkyBackend.Controllers
                     var dataAsJson = JsonSerializer.Serialize(data);
 
                     // Send the data as JSON over the wire:
-                    await Response.WriteAsync($"data: {dataAsJson}\r\r");
-
-                    Response.Body.Flush();
+                    await Response.WriteAsync($"data: {dataAsJson}\r\r", cancellationToken);
+                    await Response.Body.FlushAsync(cancellationToken);
                 } 
                 catch(Exception e)
                 {
@@ -80,8 +75,6 @@ namespace OpenSkyBackend.Controllers
 
                 await Task.Delay(refreshInterval);
             }
-
-            return Ok();
         }
 
         private BoundingBox GetBoundingBoxFromRequest(StateVectorsRequestDto request)

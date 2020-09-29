@@ -1,0 +1,18 @@
+version: '3.0'
+services:
+  backend:
+    container_name: backend
+    build: 
+        context: ../Backend
+        dockerfile: ../Docker/backend/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Linux
+    ports:
+      - 9001:5000
+  frontend:
+    container_name: frontend
+    build:
+        context: ../Frontend/opensky-app
+        dockerfile: ../../Docker/frontend/Dockerfile
+    ports:
+      - 4200:80
