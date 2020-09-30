@@ -150,7 +150,7 @@ export class MapService {
         };
 
         if (stateVector.true_track) {
-            feature.properties['icon_rotate'] = stateVector.true_track * -1;
+            feature.properties['icon_rotate'] = stateVector.true_track;
         }
 
         return feature;
