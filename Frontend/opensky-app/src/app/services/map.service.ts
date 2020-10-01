@@ -129,7 +129,6 @@ export class MapService {
 
             source.setData(this.markers);
         }
-
     }
 
     private convertStateVectorToGeoJson(stateVector: StateVector): GeoJSON.Feature<GeoJSON.Point> {
