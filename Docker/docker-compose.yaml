@@ -7,6 +7,8 @@ services:
         dockerfile: ../Docker/opensky_backend/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Linux
+    volumes:
+      - G:/Data/OpenSky:/OpenSky
     ports:
       - 9001:9001
   frontend:

@@ -109,7 +109,14 @@ namespace OpenSkyBackend.Controllers
 
             if (string.IsNullOrWhiteSpace(filename))
             {
+                logger.LogInformation("No Credentials file given. Anonymous requests will be performed.");
+
                 return null;
+            }
+
+            if(!IOFile.Exists(filename))
+            {
+                logger.LogInformation($"No Credentials file found at '{filename}'");
             }
 
             var content = IOFile.ReadAllText(applicationOptions.CredentialsFile);
@@ -128,13 +135,19 @@ namespace OpenSkyBackend.Controllers
         {
             if (applicationOptions == null)
             {
+                logger.LogInformation("No Application Options found (using default: 10 seconds)");
+
                 return TimeSpan.FromSeconds(10);
             }
 
             if (!applicationOptions.RefreshInterval.HasValue)
             {
+                logger.LogInformation("No RefreshInterval given (using default: 10 seconds).");
+
                 return TimeSpan.FromSeconds(10);
             }
+
+            logger.LogInformation($"Refresh interval is {applicationOptions.RefreshInterval.Value} seconds.");
 
             return TimeSpan.FromSeconds(applicationOptions.RefreshInterval.Value);
         }
