@@ -138,10 +138,21 @@ export class MapService {
             type: 'Feature',
             properties: {
                 'flight.icao24': stateVector.icao24,
+                'flight.callsign': stateVector.callsign,
+                'flight.origin_country': stateVector.origin_country,
+                'flight.time_position': stateVector.time_position,
                 'flight.last_contact': stateVector.last_contact,
                 'flight.longitude': stateVector.longitude,
-                'flight.latitude': stateVector.latitude,
-                'flight.origin_country': stateVector.origin_country
+                'flight.latitude': stateVector.longitude,
+                'flight.baro_altitude': stateVector.baro_altitude,
+                'flight.on_ground':stateVector.on_ground ,
+                'flight.velocity': stateVector.velocity,
+                'flight.true_track': stateVector.true_track,
+                'flight.vertical_rate': stateVector.vertical_rate,
+                'flight.geo_altitude': stateVector.geo_altitude,
+                'flight.squawk': stateVector.squawk,
+                'flight.spi': stateVector.spi,
+                'flight.position_source': stateVector.position_source,
             },
             geometry: {
                 type: 'Point',
