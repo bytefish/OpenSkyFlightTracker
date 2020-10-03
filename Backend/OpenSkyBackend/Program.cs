@@ -18,10 +18,8 @@ namespace OpenSkyBackend
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseKestrel()
                         .UseUrls("http://*:9001")
-                        .UseStartup<Startup>()
-                        .UseIISIntegration();
+                        .UseStartup<Startup>();
                 });
     }
 }

@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from "@angular/core";
 import * as mapboxgl from 'mapbox-gl';
 import { LngLatLike, MapboxOptions, GeoJSONSource, Style, MapLayerMouseEvent, MapboxGeoJSONFeature } from 'mapbox-gl';
-import { BehaviorSubject, Observable, of, ReplaySubject } from "rxjs";
+import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
 import { first } from 'rxjs/operators';
 import { StateVector } from '../model/state-vector';
 import { LoggerService } from './logger.service';
@@ -48,46 +48,58 @@ export class MapService {
     }
 
     private registerEvents(): void {
-        this.mapInstance.on('load', () => {
-            this.ngZone.run(() => {
-                this.mapLoaded$.next(true);
-            });
-        });
-
         this.mapInstance.on('style.load', () => {
+
             // We cannot reference the mapInstance in the callback, so store
             // it temporarily here:
             const map = this.mapInstance;
             const markers = this.markers;
-            // We want a custom icon for the GeoJSON Points, so we need to load 
-            // an image like described here: https://docs.mapbox.com/mapbox-gl-js/example/add-image/
-            map.loadImage('http://localhost:4200/assets/plane.png', function (error, image) {
 
-                if (error) {
-                    throw error;
-                }
-
-                map.addImage("icon_plane", image);
-
-                map.addSource('markers', {
-                    "type": "geojson",
-                    "data": markers
-                });
-
-                map.addLayer({
-                    "id": "markers",
-                    "source": "markers",
-                    "type": "symbol",
-                    "layout": {
-                        "icon-image": "icon_plane",
-                        "icon-allow-overlap": true,
-                        "icon-rotate": {
-                            "property": "icon_rotate",
-                            "type": "identity"
+            const addImageToMap = (map: mapboxgl.Map, url: string, name: string) => {
+                return new Promise((resolve, reject) => {
+                    map.loadImage(url, function (error, image) {
+                        if (error) {
+                            throw reject(error);
                         }
-                    }
+
+                        map.addImage(name, image);
+
+                        resolve(image);
+                    });
                 });
-            });
+            };
+
+            addImageToMap(map, 'http://localhost:4200/assets/plane.png', 'icon_plane')
+                .then(() => addImageToMap(map, 'http://localhost:4200/assets/plane_selected.png', 'icon_plane_selected'))
+                .then(() => {
+                    map.addSource('markers', {
+                        "type": "geojson",
+                        "data": markers
+                    });
+
+                    map.addLayer({
+                        "id": "markers",
+                        "source": "markers",
+                        "type": "symbol",
+                        "layout": {
+                            "icon-image": [ 
+                                "case",
+                                ["==", ["get", "flight.selected"], true], 
+                                "icon_plane_selected",
+                                "icon_plane"
+                            ],                                
+                            "icon-allow-overlap": true,
+                            "icon-rotate": {
+                                "property": "icon_rotate",
+                                "type": "identity"
+                            }
+                        }
+                    });
+
+                    this.ngZone.run(() => {
+                        this.mapLoaded$.next(true);
+                    });
+                });
         });
 
         this.mapInstance.on('click', 'markers', (e: MapLayerMouseEvent) => {
@@ -118,12 +130,12 @@ export class MapService {
         return this.markerClick$.asObservable();
     }
 
-    displayStateVectors(states: Array<StateVector>): void {
+    displayStateVectors(states: Array<StateVector>, selectedFlights: Set<string>): void {
         if (this.mapInstance) {
 
             this.markers.features = states
                 .filter(state => state.longitude && state.latitude)
-                .map(state => this.convertStateVectorToGeoJson(state));
+                .map(state => this.convertStateVectorToGeoJson(state, selectedFlights));
 
             const source: GeoJSONSource = <GeoJSONSource>this.mapInstance.getSource('markers');
 
@@ -131,7 +143,9 @@ export class MapService {
         }
     }
 
-    private convertStateVectorToGeoJson(stateVector: StateVector): GeoJSON.Feature<GeoJSON.Point> {
+    private convertStateVectorToGeoJson(stateVector: StateVector, selectedFlights: Set<string>): GeoJSON.Feature<GeoJSON.Point> {
+
+        const selected = selectedFlights.has(stateVector.icao24);
 
         const feature: GeoJSON.Feature<GeoJSON.Point> = {
             type: 'Feature',
@@ -144,7 +158,7 @@ export class MapService {
                 'flight.longitude': stateVector.longitude,
                 'flight.latitude': stateVector.longitude,
                 'flight.baro_altitude': stateVector.baro_altitude,
-                'flight.on_ground':stateVector.on_ground ,
+                'flight.on_ground': stateVector.on_ground,
                 'flight.velocity': stateVector.velocity,
                 'flight.true_track': stateVector.true_track,
                 'flight.vertical_rate': stateVector.vertical_rate,
@@ -152,6 +166,7 @@ export class MapService {
                 'flight.squawk': stateVector.squawk,
                 'flight.spi': stateVector.spi,
                 'flight.position_source': stateVector.position_source,
+                'flight.selected': selected
             },
             geometry: {
                 type: 'Point',
