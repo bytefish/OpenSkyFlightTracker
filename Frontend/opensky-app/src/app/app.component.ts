@@ -7,6 +7,7 @@ import { StateVectorResponse } from './model/state-vector';
 import { LoggerService } from './services/logger.service';
 import { MapService } from './services/map.service';
 import { SseService } from './services/sse.service';
+import { StringUtils } from './utils/string-utils';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   mapCenter: LngLatLike;
   isMapLoaded: boolean;
   features: string;
-  selected: Set<string>;
+  selected: string;
 
   stateVectorObs: Observable<StateVectorResponse>;
   markerClickObs: Observable<mapboxgl.MapboxGeoJSONFeature[]>;
@@ -32,7 +33,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.mapCenter = new LngLat(7.628202, 51.961563);
     this.mapZoom = 10;
     this.features = "Select a plane on the map\n to display its data.";
-    this.selected = new Set<string>();
 
     this.stateVectorObs = this.sseService
       .asObservable(environment.apiUrl)
@@ -76,11 +76,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const icao24 = features[0].properties['flight.icao24'];
 
       // Has the Flight been selected already: 
-      if (this.selected.has(icao24)) {
-        this.selected.delete(icao24);
-      } else {
-        this.selected.add(icao24);
-      }
+      this.selected = !StringUtils.localeEquals(this.selected, icao24) ? icao24 : null;
 
       // Now redraw the map:
       this.mapService.displayStateVectors(stateVectorResponse.states, this.selected);

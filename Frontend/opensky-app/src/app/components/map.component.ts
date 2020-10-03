@@ -1,4 +1,7 @@
-import { ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+import { ElementRef, ViewChild } from '@angular/core';
 import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { LngLatLike, Style } from 'mapbox-gl';
 import { MapService } from '../services/map.service';
