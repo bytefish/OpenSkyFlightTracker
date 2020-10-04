@@ -86,18 +86,28 @@ export class MapService {
                         "source": "markers",
                         "type": "symbol",
                         "layout": {
-                            "icon-image": [ 
-                                "case",
-                                ["==", ["get", "flight.selected"], true], 
-                                "icon_plane_selected",
-                                "icon_plane"
-                            ],                                
+                            "icon-image": "icon_plane",                    
                             "icon-allow-overlap": true,
                             "icon-rotate": {
                                 "property": "icon_rotate",
                                 "type": "identity"
                             }
                         }
+                    });
+
+                    map.addLayer({
+                        "id": "markers-highlight",
+                        "source": "markers",
+                        "type": "symbol",
+                        "layout": {
+                            "icon-image": "icon_plane_selected",
+                            "icon-allow-overlap": true,
+                            "icon-rotate": {
+                                "property": "icon_rotate",
+                                "type": "identity"
+                            }
+                        },
+                        'filter': ['in', 'flight.icao24', '']
                     });
 
                     this.ngZone.run(() => {
@@ -134,12 +144,12 @@ export class MapService {
         return this.markerClick$.asObservable();
     }
 
-    displayStateVectors(states: Array<StateVector>, selected: string): void {
+    displayStateVectors(states: Array<StateVector>): void {
         if (this.mapInstance) {
 
             this.markers.features = states
                 .filter(state => state.longitude && state.latitude)
-                .map(state => this.convertStateVectorToGeoJson(state, selected));
+                .map(state => this.convertStateVectorToGeoJson(state));
 
             const source: GeoJSONSource = <GeoJSONSource>this.mapInstance.getSource('markers');
 
@@ -147,10 +157,13 @@ export class MapService {
         }
     }
 
-    private convertStateVectorToGeoJson(stateVector: StateVector, selected: string): GeoJSON.Feature<GeoJSON.Point> {
+    selectStateVectors(selected: Array<string>) {
+        if(this.mapInstance) {
+            this.mapInstance.setFilter('markers-highlight', ['in', ["get", "flight.icao24"], ['literal', selected]], { validate: true});
+        }
+    }
 
-        const isStateVectorSelected = StringUtils.isNullOrWhitespace(stateVector.icao24) ? false :  StringUtils.localeEquals(selected, stateVector.icao24);
-
+    private convertStateVectorToGeoJson(stateVector: StateVector): GeoJSON.Feature<GeoJSON.Point> {
         const feature: GeoJSON.Feature<GeoJSON.Point> = {
             type: 'Feature',
             properties: {
@@ -170,7 +183,6 @@ export class MapService {
                 'flight.squawk': stateVector.squawk,
                 'flight.spi': stateVector.spi,
                 'flight.position_source': stateVector.position_source,
-                'flight.selected': isStateVectorSelected
             },
             geometry: {
                 type: 'Point',

@@ -55,19 +55,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.stateVectorObs
       .subscribe(x => this.updateStateVectors(x));
 
-    this.markerClickObs.pipe(
-      withLatestFrom(this.stateVectorObs)
-    ).subscribe(res => this.handleMarkerClick(res[0], res[1]));
+    this.markerClickObs
+      .subscribe(feature => this.handleMarkerClick(feature));
   }
 
   updateStateVectors(stateVectorResponse: StateVectorResponse): void {
     if (this.isMapLoaded && stateVectorResponse?.states) {
-      
-      this.mapService.displayStateVectors(stateVectorResponse.states, this.selected);
+      this.mapService.displayStateVectors(stateVectorResponse.states);
     }
   }
 
-  handleMarkerClick(features: mapboxgl.MapboxGeoJSONFeature[], stateVectorResponse: StateVectorResponse): void {
+  handleMarkerClick(features: mapboxgl.MapboxGeoJSONFeature[]): void {
     if (features && features.length > 0) {
       // Extract Properties as JSON:
       this.features = JSON.stringify(features[0].properties, null, 2);
@@ -78,8 +76,11 @@ export class AppComponent implements OnInit, OnDestroy {
       // Has the Flight been selected already: 
       this.selected = !StringUtils.localeEquals(this.selected, icao24) ? icao24 : null;
 
-      // Now redraw the map:
-      this.mapService.displayStateVectors(stateVectorResponse.states, this.selected);
+      if(this.selected) {
+        this.mapService.selectStateVectors([ this.selected ]);
+      } else {
+        this.mapService.selectStateVectors([]);
+      }
     }
   }
 
