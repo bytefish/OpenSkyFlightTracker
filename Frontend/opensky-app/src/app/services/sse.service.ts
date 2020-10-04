@@ -3,6 +3,7 @@
 
 import {Injectable, NgZone} from "@angular/core";
 import {Observable} from "rxjs";
+import { MapService } from './map.service';
 
 @Injectable({
     providedIn: "root"
@@ -20,6 +21,10 @@ export class SseService {
 
             eventSource.onerror = (error) => {
                 this.ngZone.run(() => observer.error(error));
+            };
+
+            return () => {
+                eventSource.close();
             }
         });
     }
