@@ -1,26 +1,24 @@
 # Get the dotnet Build Environment:
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-# Install nodejs build essentials
-
-RUN apt-get update \
-    && apt-get install -y curl \
-    && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && curl -L https://www.npmjs.com/install.sh | sh
-
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install nodejs -y
+ 
 WORKDIR /source
 
 # COPY Project Files
-COPY ../src/OpenSkyFlightTracker.Web/*.csproj ./OpenSkyFlightTracker.Web/
+COPY ../src/OpenSkyFlightTracker.Web.Client/ ./OpenSkyFlightTracker.Web.Client/
+COPY ../src/OpenSkyFlightTracker.Web.Server/ ./OpenSkyFlightTracker.Web.Server/
 
 # Restore NuGet Packages
-RUN dotnet restore "OpenSkyFlightTracker.Web/OpenSkyFlightTracker.Web.csproj"
+RUN dotnet restore "OpenSkyFlightTracker.Web.Server/OpenSkyFlightTracker.Web.Server.csproj"
 
-# COPY Projects
-COPY ../src/OpenSkyFlightTracker.Web/. ./src/OpenSkyFlightTracker.Web/
+WORKDIR /source/OpenSkyFlightTracker.Web.Client
+RUN npm install
+RUN npm run build
 
-RUN dotnet publish ./src/OpenSkyFlightTracker.Web/OpenSkyFlightTracker.Web.csproj -c release -o /app
+WORKDIR /source/OpenSkyFlightTracker.Web.Server
+RUN dotnet publish  -c release -o /app
 
 # Build the final image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
@@ -30,4 +28,4 @@ WORKDIR /app
 COPY --from=build /app ./
 
 # Start the Kestrel Server:
-ENTRYPOINT ["dotnet", "OpenSkyFlightTracker.Web.dll"]
+ENTRYPOINT ["dotnet", "OpenSkyFlightTracker.Web.Server.dll"]

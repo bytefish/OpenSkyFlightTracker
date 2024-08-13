@@ -5,7 +5,9 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSkyFlightTracker.Api", "src\OpenSkyFlightTracker.Api\OpenSkyFlightTracker.Api.csproj", "{99F99430-634E-4D1D-8604-4A7CB9E28987}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSkyFlightTracker.Web", "src\OpenSkyFlightTracker.Web\OpenSkyFlightTracker.Web.csproj", "{245999B2-7C38-4C7A-A2FF-1D0ABEB275E1}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "OpenSkyFlightTracker.Web.Client", "src\OpenSkyFlightTracker.Web.Client\OpenSkyFlightTracker.Web.Client.esproj", "{92519B39-042F-4E84-BF6C-ACEAAC764C36}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSkyFlightTracker.Web.Server", "src\OpenSkyFlightTracker.Web.Server\OpenSkyFlightTracker.Web.Server.csproj", "{85289EB1-7227-44BE-98B4-01F58CD1E863}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,16 @@ Global
 		{99F99430-634E-4D1D-8604-4A7CB9E28987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99F99430-634E-4D1D-8604-4A7CB9E28987}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99F99430-634E-4D1D-8604-4A7CB9E28987}.Release|Any CPU.Build.0 = Release|Any CPU
-		{245999B2-7C38-4C7A-A2FF-1D0ABEB275E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{245999B2-7C38-4C7A-A2FF-1D0ABEB275E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{245999B2-7C38-4C7A-A2FF-1D0ABEB275E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{245999B2-7C38-4C7A-A2FF-1D0ABEB275E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92519B39-042F-4E84-BF6C-ACEAAC764C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92519B39-042F-4E84-BF6C-ACEAAC764C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92519B39-042F-4E84-BF6C-ACEAAC764C36}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{92519B39-042F-4E84-BF6C-ACEAAC764C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92519B39-042F-4E84-BF6C-ACEAAC764C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92519B39-042F-4E84-BF6C-ACEAAC764C36}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{85289EB1-7227-44BE-98B4-01F58CD1E863}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85289EB1-7227-44BE-98B4-01F58CD1E863}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85289EB1-7227-44BE-98B4-01F58CD1E863}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85289EB1-7227-44BE-98B4-01F58CD1E863}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
