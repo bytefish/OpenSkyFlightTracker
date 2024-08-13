@@ -8,8 +8,8 @@ Frontend.
 
 It's a Flight Tracker, that periodically calls the OpenSky Network API and displays the planes on a map:
 
-<a href="https://raw.githubusercontent.com/bytefish/OpenSkyFlightTracker/master/doc/OpenSkyFlightTracker.jpg">
-    <img src="https://raw.githubusercontent.com/bytefish/OpenSkyFlightTracker/master/doc/OpenSkyFlightTracker.jpg" alt="The final flight tracker" width="100%" />
+<a href="https://raw.githubusercontent.com/bytefish/OpenSkyFlightTracker/master/doc/OpenSkyFlightTracker_Flights.jpg">
+    <img src="https://raw.githubusercontent.com/bytefish/OpenSkyFlightTracker/master/doc/OpenSkyFlightTracker_Flights.jpg" alt="The final flight tracker" width="100%" />
 </a>
 
 ## Getting started ##
