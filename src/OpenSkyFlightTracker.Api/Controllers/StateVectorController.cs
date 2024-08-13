@@ -17,21 +17,15 @@ namespace OpenSkyFlightTracker.Api.Controllers
     [ApiController]
     public class StateVectorController : ControllerBase
     {
-        private readonly ILogger<StateVectorController> logger;
-        private readonly ApplicationOptions applicationOptions;
-        private readonly OpenSkyClient client;
+        private readonly ILogger<StateVectorController> _logger;
+        private readonly ApplicationOptions _applicationOptions;
+        private readonly OpenSkyClient _client;
 
         public StateVectorController(ILogger<StateVectorController> logger, IOptions<ApplicationOptions> applicationOptions, OpenSkyClient client)
         {
-            this.logger = logger;
-            this.applicationOptions = applicationOptions.Value;
-            this.client = client;
-        }
-
-        [HttpGet]
-        [Route("/tiles")]
-        public async Task GetTilesAsync([FromQuery] StateVectorsRequestDto request, CancellationToken cancellationToken)
-        {
+            _logger = logger;
+            _applicationOptions = applicationOptions.Value;
+            _client = client;
         }
 
         [HttpGet]
@@ -39,9 +33,9 @@ namespace OpenSkyFlightTracker.Api.Controllers
         public async Task GetStateVectorsAsync([FromQuery] StateVectorsRequestDto request, CancellationToken cancellationToken)
         {
             // Prepare some data for the OpenSkyClient request:
-            Credentials credentials = GetCredentials();
-            BoundingBox boundingBox = GetBoundingBoxFromRequest(request);
-            TimeSpan refreshInterval = GetRefreshInterval();
+            var credentials = GetCredentials();
+            var boundingBox = GetBoundingBoxFromRequest(request);
+            var refreshInterval = GetRefreshInterval();
 
             Response.Headers.TryAdd("Content-Type", "text/event-stream");
             Response.Headers.TryAdd("Cache-Control", "no-cache");
@@ -55,7 +49,7 @@ namespace OpenSkyFlightTracker.Api.Controllers
 
                     if (data == null)
                     {
-                        logger.LogInformation("No Data received. See Error Logs for details. Skipping Event ...");
+                        _logger.LogInformation("No Data received. See Error Logs for details. Skipping Event ...");
 
                         continue;
                     }
@@ -69,14 +63,23 @@ namespace OpenSkyFlightTracker.Api.Controllers
                 }
                 catch (Exception e)
                 {
-                    logger.LogError(e, "Requesting Data failed");
+                    _logger.LogError(e, "Requesting Data failed");
                 }
 
                 await Task.Delay(refreshInterval);
             }
         }
 
-        private BoundingBox GetBoundingBoxFromRequest(StateVectorsRequestDto request)
+        private Credentials GetCredentials()
+        {
+            return new Credentials
+            {
+                Username = _applicationOptions.OpenSkyUsername,
+                Password = _applicationOptions.OpenSkyPassword
+            };
+        }
+
+        private BoundingBox? GetBoundingBoxFromRequest(StateVectorsRequestDto request)
         {
             if (request == null)
             {
@@ -97,71 +100,25 @@ namespace OpenSkyFlightTracker.Api.Controllers
             return null;
         }
 
-        private Credentials GetCredentials()
-        {
-            if (applicationOptions == null)
-            {
-                return null;
-            }
-
-            var filename = applicationOptions.CredentialsFile;
-
-            if (string.IsNullOrWhiteSpace(filename))
-            {
-                logger.LogInformation("No Credentials file given. Anonymous requests will be performed.");
-
-                return null;
-            }
-
-            if (!IOFile.Exists(filename))
-            {
-                logger.LogInformation($"No Credentials file found at '{filename}'");
-            }
-
-            var content = IOFile.ReadAllText(applicationOptions.CredentialsFile);
-
-            var document = JsonDocument.Parse(content);
-            var element = document.RootElement;
-
-            return new Credentials
-            {
-                Username = element.GetProperty("username").GetString(),
-                Password = element.GetProperty("password").GetString()
-            };
-        }
 
         private TimeSpan GetRefreshInterval()
         {
-            if (applicationOptions == null)
-            {
-                logger.LogInformation("No Application Options found (using default: 10 seconds)");
+            _logger.LogInformation($"Refresh interval is {_applicationOptions.RefreshIntervalInMilliseconds} milliseconds.");
 
-                return TimeSpan.FromSeconds(10);
-            }
-
-            if (!applicationOptions.RefreshIntervalInSeconds.HasValue)
-            {
-                logger.LogInformation("No RefreshInterval given (using default: 10 seconds).");
-
-                return TimeSpan.FromSeconds(10);
-            }
-
-            logger.LogInformation($"Refresh interval is {applicationOptions.RefreshIntervalInSeconds.Value} seconds.");
-
-            return TimeSpan.FromSeconds(applicationOptions.RefreshIntervalInSeconds.Value);
+            return TimeSpan.FromMilliseconds(_applicationOptions.RefreshIntervalInMilliseconds);
         }
 
-        private async Task<StateVectorResponseDto> GetDataAsync(int? time, string icao24, BoundingBox boundingBox, Credentials credentials, CancellationToken cancellationToken)
+        private async Task<StateVectorResponseDto?> GetDataAsync(int? time, string icao24, BoundingBox? boundingBox, Credentials credentials, CancellationToken cancellationToken)
         {
             try
             {
-                var response = await client.GetAllStateVectorsAsync(time, icao24, boundingBox, credentials, cancellationToken);
+                var response = await _client.GetAllStateVectorsAsync(time, icao24, boundingBox, credentials, cancellationToken);
 
                 return ConvertStateVectorResponse(response);
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"Requesting Data failed (time = {time}, icao24 = {icao24}, bb({boundingBox?.LaMin},{boundingBox?.LoMin},{boundingBox?.LaMax},{boundingBox?.LoMax})");
+                _logger.LogError(e, $"Requesting Data failed (time = {time}, icao24 = {icao24}, bb({boundingBox?.LaMin},{boundingBox?.LoMin},{boundingBox?.LaMax},{boundingBox?.LoMax})");
 
                 return null;
             }

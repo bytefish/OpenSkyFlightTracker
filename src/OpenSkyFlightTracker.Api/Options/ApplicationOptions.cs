@@ -6,14 +6,14 @@ namespace OpenSkyFlightTracker.Api.Options
     public class ApplicationOptions
     {
         /// <summary>
-        /// Gets or sets the Path to the Mapbox Tiles.
+        /// Gets or sets the OpenSky Credentials.
         /// </summary>
-        public required string MbTilesPath { get; set; }
-
+        public required string OpenSkyUsername { get; set; }
+        
         /// <summary>
-        /// Gets or sets the path to the OpenSky Credentials.
+        /// Gets or sets the OpenSky Credentials.
         /// </summary>
-        public string? CredentialsFile { get; set; }
+        public required string OpenSkyPassword { get; set; }
 
         /// <summary>
         /// Gets or sets the interval for refreshing the data (in Milliseconds).
