@@ -100,7 +100,6 @@ namespace OpenSkyFlightTracker.Api.Controllers
             return null;
         }
 
-
         private TimeSpan GetRefreshInterval()
         {
             _logger.LogInformation($"Refresh interval is {_applicationOptions.RefreshIntervalInMilliseconds} milliseconds.");
@@ -108,11 +107,16 @@ namespace OpenSkyFlightTracker.Api.Controllers
             return TimeSpan.FromMilliseconds(_applicationOptions.RefreshIntervalInMilliseconds);
         }
 
-        private async Task<StateVectorResponseDto?> GetDataAsync(int? time, string icao24, BoundingBox? boundingBox, Credentials credentials, CancellationToken cancellationToken)
+        private async Task<StateVectorResponseDto?> GetDataAsync(int? time, string? icao24, BoundingBox? boundingBox, Credentials credentials, CancellationToken cancellationToken)
         {
             try
             {
                 var response = await _client.GetAllStateVectorsAsync(time, icao24, boundingBox, credentials, cancellationToken);
+
+                if(response == null)
+                {
+                    return null;
+                }
 
                 return ConvertStateVectorResponse(response);
             }
@@ -126,11 +130,6 @@ namespace OpenSkyFlightTracker.Api.Controllers
 
         private StateVectorResponseDto ConvertStateVectorResponse(StateVectorResponse response)
         {
-            if (response == null)
-            {
-                return null;
-            }
-
             return new StateVectorResponseDto
             {
                 Time = response.Time,
@@ -140,11 +139,6 @@ namespace OpenSkyFlightTracker.Api.Controllers
 
         private StateVectorDto[] ConvertStates(StateVector[] states)
         {
-            if (states == null)
-            {
-                return null;
-            }
-
             return states
                 .Select(x => ConvertState(x))
                 .ToArray();
@@ -152,11 +146,6 @@ namespace OpenSkyFlightTracker.Api.Controllers
 
         private StateVectorDto ConvertState(StateVector state)
         {
-            if (state == null)
-            {
-                return null;
-            }
-
             return new StateVectorDto
             {
                 BarometricAltitude = state.BarometricAltitude,

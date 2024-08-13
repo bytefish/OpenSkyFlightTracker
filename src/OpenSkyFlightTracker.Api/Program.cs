@@ -6,6 +6,7 @@ using Serilog;
 using OpenSkyFlightTracker.Api.Services;
 using OpenSkyRestClient;
 using OpenSkyFlightTracker.Api.Options;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 public partial class Program
 {
@@ -89,12 +90,30 @@ public partial class Program
             // CORS
             app.UseCors("CorsPolicy");
 
-            app.UseRateLimiter();
-
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
-            app.UseRateLimiter();
+            // To serve PBF Files, we need to allow unknown filetypes 
+            // to be served by the Webserver:
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ServeUnknownFileTypes = true,
+                OnPrepareResponse = (ctx) =>
+                {
+                    var corsService = ctx.Context.RequestServices.GetRequiredService<ICorsService>();
+                    var corsPolicyProvider = ctx.Context.RequestServices.GetRequiredService<ICorsPolicyProvider>();
+                    
+                    var policy = corsPolicyProvider.GetPolicyAsync(ctx.Context, "CorsPolicy")
+                        .ConfigureAwait(false)
+                        .GetAwaiter().GetResult();
+
+                    if (policy != null)
+                    {
+                        var corsResult = corsService.EvaluatePolicy(ctx.Context, policy);
+
+                        corsService.ApplyResult(corsResult, ctx.Context.Response);
+                    }
+                }
+            });
 
             app.MapControllers();
 

@@ -9,7 +9,7 @@
   "sources": {
     "ne_2_hr_lc_sr": {
       "tiles": [
-        "http://localhost:9000/tiles/natural_earth_2_shaded_relief.raster/{z}/{x}/{y}"
+        "http://localhost:5000/tiles/natural_earth_2_shaded_relief.raster/{z}/{x}/{y}"
       ],
       "type": "raster",
       "tileSize": 256,
@@ -18,14 +18,14 @@
     "openmaptiles": {
       "type": "vector",
       "tiles": [
-        "http://localhost:9000/tiles/openmaptiles/{z}/{x}/{y}"
+        "https://localhost:5000/tiles/openmaptiles/{z}/{x}/{y}"
       ],
       "minzoom": 0,
       "maxzoom": 14
     }
   },
-  "sprite": "http://localhost:9000/static/sprites/osm_liberty/osm-liberty",
-  "glyphs": "http://localhost:9000/static/fonts/{fontstack}/{range}.pbf",
+  "sprite": "https://localhost:5000/sprites/osm_liberty/osm-liberty",
+  "glyphs": "https://localhost:5000/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",

@@ -28,13 +28,13 @@ export class AppComponent implements OnInit, OnDestroy {
   markerClickObs: Observable<maplibregl.MapGeoJSONFeature[]>;
 
   constructor(private sseService: SseService, private appSettings: AppSettingsService, private mapService: MapService) {
-    this.mapStyle = "http://localhost:9000/static/style/osm_liberty/osm_liberty.json";
+    this.mapStyle = "https://localhost:5000/style/osm_liberty/osm_liberty.json";
     this.mapCenter = new LngLat(7.628202, 51.961563);
     this.mapZoom = 10;
     this.features = "Select a plane on the map\n to display its data.";
 
     this.stateVectorObs = this.sseService
-      .asObservable(appSettings.getAppSettings().apiUrl)
+      .asObservable(this.appSettings.getAppSettings().apiUrl)
       .pipe(
         takeUntil(this.destroy$),
         map((x: MessageEvent<any>) => <StateVectorResponse> JSON.parse(x.data)));

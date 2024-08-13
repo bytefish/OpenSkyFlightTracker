@@ -11,7 +11,7 @@ namespace OpenSkyFlightTracker.Api.Dto
         public int? Time { get; set; }
 
         [FromQuery(Name = "icao24")]
-        public string Icao24 { get; set; }
+        public string? Icao24 { get; set; }
 
         [FromQuery(Name = "lamin")]
         public float? LaMin { get; set; }
