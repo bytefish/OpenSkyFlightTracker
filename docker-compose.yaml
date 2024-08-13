@@ -3,10 +3,10 @@ networks:
 
 services:
   opensky-api:
-    container_name: search-api
+    container_name: opensky-api
     build:
       context: .
-      dockerfile: ./docker/search-api/Dockerfile
+      dockerfile: ./docker/opensky-api/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_HTTPS_PORTS=5000
@@ -18,14 +18,14 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./docker/search-api/search-data:/search-data
-      - ~/.aspnet/https:/https:ro      
+      - ~/.aspnet/https:/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-  search-web:
-    container_name: search-web
+      - ./docker/opensky-tiles:/opensky-tiles
+  opensky-web:
+    container_name: opensky-web
     build:
       context: .
-      dockerfile: ./docker/search-web/Dockerfile
+      dockerfile: ./docker/opensky-web/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_HTTPS_PORTS=5001
