@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace OpenSkyBackend.Dto
+namespace OpenSkyFlightTracker.Api.Dto
 {
     public class StateVectorsRequestDto
     {

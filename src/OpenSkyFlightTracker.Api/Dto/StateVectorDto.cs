@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace OpenSkyBackend.Dto
+namespace OpenSkyFlightTracker.Api.Dto
 {
     public class StateVectorDto
     {

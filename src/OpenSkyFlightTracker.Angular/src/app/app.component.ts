@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
     this.stateVectorObs
-      .subscribe(x => this.updateStateVectors(x));
+      .subscribe((x) => this.updateStateVectors(x));
 
     this.markerClickObs
       .subscribe((feature: maplibregl.MapGeoJSONFeature[]) => this.handleMarkerClick(feature));
