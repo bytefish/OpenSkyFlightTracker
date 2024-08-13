@@ -1,20 +1,41 @@
-version: '3.0'
+networks:
+  services:
+
 services:
-  backend:
-    container_name: opensky_backend
-    build: 
-        context: ../Backend
-        dockerfile: ../Docker/opensky_backend/Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Linux
-    volumes:
-      - G:/Data/OpenSky:/OpenSky
-    ports:
-      - 9001:9001
-  frontend:
-    container_name: opensky_frontend
+  opensky-api:
+    container_name: search-api
     build:
-        context: ../Frontend/opensky-app
-        dockerfile: ../../Docker/opensky_frontend/Dockerfile
+      context: .
+      dockerfile: ./docker/search-api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_HTTPS_PORTS=5000
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=SuperStrongPassword
+    profiles:  ["api", "dev"]
+    env_file:
+      - ./docker/.env
     ports:
-      - 4200:80
+      - "5000:5000"
+    volumes:
+      - ./docker/search-api/search-data:/search-data
+      - ~/.aspnet/https:/https:ro      
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  search-web:
+    container_name: search-web
+    build:
+      context: .
+      dockerfile: ./docker/search-web/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_HTTPS_PORTS=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=SuperStrongPassword
+    profiles:  ["web", "dev"]
+    env_file:
+      - ./docker/.env
+    ports:
+      - "5001:5001"
+    volumes:
+      - ~/.aspnet/https:/https:ro      
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
