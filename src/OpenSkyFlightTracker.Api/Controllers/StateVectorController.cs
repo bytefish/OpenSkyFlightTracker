@@ -4,15 +4,15 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using OpenSkyBackend.Dto;
-using OpenSkyBackend.Options;
+using OpenSkyFlightTracker.Api.Dto;
+using OpenSkyFlightTracker.Api.Options;
 using OpenSkyRestClient;
 using OpenSkyRestClient.Model;
 using OpenSkyRestClient.Model.Response;
 using OpenSkyRestClient.Options;
 using IOFile = System.IO.File;
 
-namespace OpenSkyBackend.Controllers
+namespace OpenSkyFlightTracker.Api.Controllers
 {
     [ApiController]
     public class StateVectorController : ControllerBase
@@ -33,7 +33,7 @@ namespace OpenSkyBackend.Controllers
         public async Task GetTilesAsync([FromQuery] StateVectorsRequestDto request, CancellationToken cancellationToken)
         {
         }
-        
+
         [HttpGet]
         [Route("/states")]
         public async Task GetStateVectorsAsync([FromQuery] StateVectorsRequestDto request, CancellationToken cancellationToken)
@@ -53,7 +53,7 @@ namespace OpenSkyBackend.Controllers
                     // Get the data for the given Request:
                     var data = await GetDataAsync(request.Time, request.Icao24, boundingBox, credentials, cancellationToken);
 
-                    if(data == null)
+                    if (data == null)
                     {
                         logger.LogInformation("No Data received. See Error Logs for details. Skipping Event ...");
 
@@ -66,8 +66,8 @@ namespace OpenSkyBackend.Controllers
                     // Send the data as JSON over the wire:
                     await Response.WriteAsync($"data: {dataAsJson}\r\r", cancellationToken);
                     await Response.Body.FlushAsync(cancellationToken);
-                } 
-                catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     logger.LogError(e, "Requesting Data failed");
                 }
@@ -113,7 +113,7 @@ namespace OpenSkyBackend.Controllers
                 return null;
             }
 
-            if(!IOFile.Exists(filename))
+            if (!IOFile.Exists(filename))
             {
                 logger.LogInformation($"No Credentials file found at '{filename}'");
             }
@@ -169,7 +169,7 @@ namespace OpenSkyBackend.Controllers
 
         private StateVectorResponseDto ConvertStateVectorResponse(StateVectorResponse response)
         {
-            if(response == null)
+            if (response == null)
             {
                 return null;
             }
@@ -183,7 +183,7 @@ namespace OpenSkyBackend.Controllers
 
         private StateVectorDto[] ConvertStates(StateVector[] states)
         {
-            if(states == null)
+            if (states == null)
             {
                 return null;
             }
@@ -195,7 +195,7 @@ namespace OpenSkyBackend.Controllers
 
         private StateVectorDto ConvertState(StateVector state)
         {
-            if(state == null)
+            if (state == null)
             {
                 return null;
             }
@@ -226,12 +226,12 @@ namespace OpenSkyBackend.Controllers
 
         private PositionSourceEnumDto ConvertPositionSource(PositionSourceEnum? positionSource)
         {
-            if(positionSource == null)
+            if (positionSource == null)
             {
                 return PositionSourceEnumDto.Unknown;
             }
 
-            switch(positionSource.Value)
+            switch (positionSource.Value)
             {
                 case PositionSourceEnum.ASBD:
                     return PositionSourceEnumDto.ASBD;
