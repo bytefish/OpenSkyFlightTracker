@@ -2,11 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Install nodejs build essentials
+
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive \
-    apt-get install --no-install-recommends --assume-yes \
-      build-essential \
-      nodejs
+    && apt-get install -y curl \
+    && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && curl -L https://www.npmjs.com/install.sh | sh
 
 WORKDIR /source
 
@@ -29,4 +30,4 @@ WORKDIR /app
 COPY --from=build /app ./
 
 # Start the Kestrel Server:
-ENTRYPOINT ["dotnet", "OpenSkyFlightTracker.Api.dll"]
+ENTRYPOINT ["dotnet", "OpenSkyFlightTracker.Web.dll"]
