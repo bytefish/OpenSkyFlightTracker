@@ -9,7 +9,7 @@
   "sources": {
     "ne_2_hr_lc_sr": {
       "tiles": [
-        "http://localhost:5000/tiles/natural_earth_2_shaded_relief.raster/{z}/{x}/{y}"
+        "https://localhost:5000/tiles/natural_earth_2_shaded_relief.raster/{z}/{x}/{y}"
       ],
       "type": "raster",
       "tileSize": 256,

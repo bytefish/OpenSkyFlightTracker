@@ -2,10 +2,12 @@ body {
     margin: 0;
   }
 
-mapbox-map {
+maplibre-map {
+    position: fixed;
     height: 100%;
     width: 100%;
 }
+
 
 #heading {
     font-family: 'Montserrat', sans-serif;
