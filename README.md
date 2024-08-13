@@ -1,7 +1,7 @@
 # OpenSkyFlightTracker #
 
 This application implements a Backend and Frontend for a flight tracker using the OpenSky Network REST API, 
-ASP.NET Core, Angular and Mapbox GL JS. It uses Server-Sent Events to push data from the Backend to the 
+ASP.NET Core, Angular and MapLibre GL JS. It uses Server-Sent Events to push data from the Backend to the 
 Frontend. 
 
 ## What's included ##
