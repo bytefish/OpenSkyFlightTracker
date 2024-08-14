@@ -2,3 +2,5 @@ You'll need to unpack the PBF Fonts to /assets/fonts. The following commands can
 
 > mkdir "assets\fonts"
 > tar xf "..\..\..\data\fonts\fonts.zip" -C "assets/fonts"
+
+No worries, it won't be commited to Git!
