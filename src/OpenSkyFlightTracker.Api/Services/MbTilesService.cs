@@ -1,11 +1,13 @@
-﻿using Microsoft.Data.Sqlite;
+﻿// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.Data.Sqlite;
 using OpenSkyFlightTracker.Api.Options;
 
 namespace OpenSkyFlightTracker.Api.Services
 {
     public class MapboxTileService
     {
-        public byte[] Read(Tileset tileset, int z, int x, int y)
+        public byte[]? Read(Tileset tileset, int z, int x, int y)
         {
             using (var connection = new SqliteConnection($"Data Source={tileset.Filename}"))
             {

@@ -70,7 +70,7 @@ public partial class Program
 
             // Infrastructure (Tileserver)
             builder.Services.AddSingleton<OpenSkyClient>();
-            builder.Services.AddSingleton<MapboxTileService>();
+            builder.Services.AddSingleton<MbTilesService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

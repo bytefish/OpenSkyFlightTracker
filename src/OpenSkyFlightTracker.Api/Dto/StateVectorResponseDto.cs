@@ -1,5 +1,4 @@
-﻿// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.Json.Serialization;
 
@@ -18,6 +17,6 @@ namespace OpenSkyFlightTracker.Api.Dto
         /// The state vectors.
         /// </summary>
         [JsonPropertyName("states")]
-        public StateVectorDto[] States { get; set; }
+        public StateVectorDto[] States { get; set; } = [];
     }
-}
+ }

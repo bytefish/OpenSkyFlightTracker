@@ -8,14 +8,14 @@ using OpenSkyFlightTracker.Api.Services;
 namespace OpenSkyFlightTracker.Api.Controllers
 {
     [ApiController]
-    public class TilesController : ControllerBase
+    public class MbTilesController : ControllerBase
     {
-        private readonly ILogger<TilesController> _logger;
+        private readonly ILogger<MbTilesController> _logger;
 
         private readonly ApplicationOptions _applicationOptions;
-        private readonly MapboxTileService _mapboxTileService;
+        private readonly MbTilesService _mapboxTileService;
 
-        public TilesController(ILogger<TilesController> logger, IOptions<ApplicationOptions> applicationOptions, MapboxTileService mapboxTileService)
+        public MbTilesController(ILogger<MbTilesController> logger, IOptions<ApplicationOptions> applicationOptions, MbTilesService mapboxTileService)
         {
             _logger = logger;
             _applicationOptions = applicationOptions.Value;
