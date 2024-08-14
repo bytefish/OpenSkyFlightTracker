@@ -26,7 +26,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\data\fonts\fonts.tar.xz" Link="wwwroot\fonts.tar.xz" />
+        <Content Include="..\..\data\fonts\fonts.tar.xz" Link="wwwroot\fonts.tar.xz">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\README.txt">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

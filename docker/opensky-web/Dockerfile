@@ -11,8 +11,6 @@ WORKDIR /source
 COPY ../src/OpenSkyFlightTracker.Web.Client/ ./OpenSkyFlightTracker.Web.Client/
 COPY ../src/OpenSkyFlightTracker.Web.Server/ ./OpenSkyFlightTracker.Web.Server/
 
-ADD ../data/fonts/fonts.tar.xz ./OpenSkyFlightTracker.Web.Server/wwwroot/assets/fonts
-
 RUN dotnet restore "OpenSkyFlightTracker.Web.Server/OpenSkyFlightTracker.Web.Server.csproj"
 
 WORKDIR /source/OpenSkyFlightTracker.Web.Client
@@ -25,6 +23,8 @@ RUN dotnet publish -c release -o /app  /p:UseAppHost=false
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 WORKDIR /app
+
+ADD ../data/fonts/fonts.tar.xz ./wwwroot/assets/fonts
 
 COPY --from=build /app ./
 
