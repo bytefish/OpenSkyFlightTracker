@@ -23,8 +23,6 @@
 
     <ItemGroup>
       <Folder Include="wwwroot\fonts\" />
-      <Folder Include="wwwroot\style\" />
-      <Folder Include="wwwroot\sprites\" />
     </ItemGroup>
 
 </Project>

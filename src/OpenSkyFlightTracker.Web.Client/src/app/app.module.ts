@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapComponent } from './components/map.component';
 import { MapService } from './services/map.service';
-import { AppSettingsService } from './services/app-settings.service';
+import { AppSettingsService } from './services/appsettings.service';
 import { provideHttpClient } from '@angular/common/http';
 
 export function initConfig(appConfig: AppSettingsService) {

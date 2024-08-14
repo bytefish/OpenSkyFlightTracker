@@ -6,7 +6,7 @@ import { StateVectorResponse } from './model/state-vector';
 import { MapService } from './services/map.service';
 import { SseService } from './services/sse.service';
 import { StringUtils } from './utils/string-utils';
-import { AppSettingsService } from './services/app-settings.service';
+import { AppSettingsService } from './services/appsettings.service';
 
 @Component({
   selector: 'app-root',
@@ -27,34 +27,51 @@ export class AppComponent implements OnInit, OnDestroy {
   stateVectorObs: Observable<StateVectorResponse>;
   markerClickObs: Observable<maplibregl.MapGeoJSONFeature[]>;
 
-  constructor(private sseService: SseService, private appSettings: AppSettingsService, private mapService: MapService) {
-    this.mapStyle = "https://localhost:5000/style/osm_liberty/osm_liberty.json";
-    this.mapCenter = new LngLat(7.628202, 51.961563);
-    this.mapZoom = 10;
+  constructor(private sseService: SseService, private appSettingsService: AppSettingsService, private mapService: MapService) {
+    const appSettings = this.appSettingsService.getAppSettings();
+
+    // Set the Style for the Map:
+    this.mapStyle = appSettings.mapOptions.mapStyleUrl;
+
+    // Set the Initial Map Center:
+    this.mapCenter = new LngLat(
+      appSettings.mapOptions.mapInitialPoint.lng,
+      appSettings.mapOptions.mapInitialPoint.lat); 
+
+    // Set the Initial Map Zoom Level:
+    this.mapZoom = appSettings.mapOptions.mapInitialZoom;
+
+    // Initial Text for the Sidebar:
     this.features = "Select a plane on the map\n to display its data.";
 
+    // Registers to the SSE Stream to update the OpenSky State Vectors:
     this.stateVectorObs = this.sseService
-      .asObservable(this.appSettings.getAppSettings().apiUrl)
+      .asObservable(appSettings.apiUrl)
       .pipe(
         takeUntil(this.destroy$),
         map((x: MessageEvent<any>) => <StateVectorResponse> JSON.parse(x.data)));
 
+    // Handles Clicks on the map's markers:
     this.markerClickObs = this.mapService.onMarkerClicked()
       .pipe(takeUntil(this.destroy$));
   }
 
   ngOnInit(): void {
-
+    // Emits a value, when the map has been loaded:
     this.mapService.onMapLoaded()
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.isMapLoaded = value;
       });
 
+    // Subscribes to the State Vector Observable:
     this.stateVectorObs
+      .pipe(takeUntil(this.destroy$))
       .subscribe((x) => this.updateStateVectors(x));
 
+    // Subscribes to the Marker Click Observable:
     this.markerClickObs
+      .pipe(takeUntil(this.destroy$))
       .subscribe((feature: maplibregl.MapGeoJSONFeature[]) => this.handleMarkerClick(feature));
   }
 
